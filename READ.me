@@ -1,0 +1,61 @@
+1. Yêu cầu hệ thống
+Máy tính đã cài đặt JDK 17 hoặc JDK 21.
+
+Đã cài đặt Maven (hoặc sử dụng trực tiếp bộ cài ./mvnw đính kèm trong dự án).
+
+2. Khởi chạy ứng dụng
+Mở Terminal tại thư mục gốc của dự án và chạy các lệnh sau:
+
+Bước 1: Biên dịch và cài đặt file JAR thư viện ngoài cục bộ (Nếu có)
+
+Bash
+mvn install:install-file -Dfile=đường-dẫn-đến-file-mybignumber.jar -DgroupId=com.mybignumber -DartifactId=lib -Dversion=1.0.0 -Dpackaging=jar
+Bước 2: Biên dịch ứng dụng
+
+Bash
+./mvnw clean package -DskipTests
+Bước 3: Chạy ứng dụng
+
+Bash
+./mvnw spring-boot:run
+Sau khi hệ thống khởi động xong, bạn mở trình duyệt và truy cập: http://localhost:8080/
+
+📮 Cấu hình Kiểm thử API bằng Postman
+Ứng dụng cung cấp API endpoint phục vụ kiểm thử dữ liệu độc lập:
+
+Method: POST
+
+URL: http://localhost:8080/calculate
+
+Content-Type: application/x-www-form-urlencoded
+
+Body Params:
+
+num1: 100
+
+num2: 900
+
+Response mẫu (JSON):
+
+JSON
+{
+  "finalProgress": "1000",
+  "stepsList": [
+    "Bước 1: Lấy số 0 cộng số 0 bằng 0, ghi nhận số nhớ 0",
+    "Bước 2: Lấy số 0 cộng số 0 bằng 0, ghi nhận số nhớ 0",
+    "Bước 3: Lấy số 1 cộng số 9 bằng 10, ghi nhận kết quả và nhớ 1"
+  ]
+}
+🧪 Chạy Kiểm thử Tự động (Unit Test)
+Để thực thi toàn bộ các ca kiểm thử tích hợp (Integration Test) nhằm kiểm tra tính toàn vẹn của API điều hướng và cấu trúc JSON trả về, sử dụng lệnh:
+
+Bash
+./mvnw test
+🌐 Triển khai trực tuyến (Deployment trên Render)
+Dự án đã được cấu hình sẵn sàng để deploy tự động lên Render.com:
+
+Build Command: ./mvnw clean package -DskipTests
+
+Start Command: java -jar target/tên-file-ứng-dụng-của-bạn.jar
+
+Environment: Biến môi trường Java được định nghĩa đồng bộ thông qua file system.properties.

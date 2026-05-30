@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add2Num</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="font-mono bg-gradient-to-r from-black via-gray-950 to-gray-950 min-h-screen py-12 px-4 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+
+    <div class="lg:w-1/2 w-100 lg:float-left flex-1 flex flex-col justify-between">
+        <div class="p-4">
+            <h2
+                class="text-2xl font-extrabold text-white mb-8 flex items-center gap-3">
+                Add2Num
+            </h2>
+
+            <form id="calcForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Số thứ nhất (Num 1)</label>
+                    <input type="text" id="num1" placeholder="Nhập chuỗi số nguyên" required
+                        class="min-w-[320px] p-4 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none font-mono text-xl tracking-widest text-white placeholder-slate-600 transition-all duration-200 shadow-inner">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Số thứ hai (Num 2)</label>
+                    <input type="text" id="num2" placeholder="Nhập chuỗi số nguyên" required
+                        class="min-w-[320px] p-4 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none font-mono text-xl tracking-widest text-white placeholder-slate-600 transition-all duration-200 shadow-inner">
+                </div>
+
+                <button type="submit"
+                    class="py-4 px-16 border text-white text-lg font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0px_32px_rgba(79,70,229,0.5)] active:scale-[0.99] flex justify-center items-center gap-2 tracking-wide cursor-pointer uppercase">
+                    Tính
+                </button>
+                <p id="warning" class="hidden text-md font-bold tracking-wider text-red-500 pl-4 align-top"> Chỉ cho phép chữ số</p>
+            </form>
+        </div>
+
+        <div id="resultContainer" class="hidden p-4">
+            <label class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-3 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Đáp án từ Module JAR
+            </label>
+            <div id="finalResult"
+                class="w-[320px] p-4 text-xl bg-emerald-950/30 border border-emerald-500/20 rounded-xl text-emerald-400 font-mono shadow-[inner_0_2px_8px_rgba(0,0,0,0.6)]">
+            </div>
+        </div>
+    </div>
+
+    <div id="consoleBoard"
+        class="hidden lg:w-1/2 w-100 lg:float-left flex-1 p-8 flex flex-col min-h-[500px] relative overflow-hidden">
+        <div id="animationZone"
+            class="flex flex-col items-end font-mono text-4xl tracking-widest mb-6 space-y-3 hidden relative z-10">
+            <div id="row1" class="flex gap-1.5 py-1 text-white font-light transition-all duration-300"></div>
+            <div id="row2"
+                class="flex gap-1.5 py-1 border-b-2 border-slate-700 w-full justify-end relative text-white font-light transition-all duration-300">
+                <span class="absolute left-1 -top-1 text-white font-sans text-3xl font-medium">+</span>
+            </div>
+            <div id="rowResult" class="flex gap-1.5 py-1 text-white font-medium transition-all duration-300"></div>
+        </div>
+
+        <div id="logConsole"
+            class="flex-1 overflow-y-auto space-y-3 font-mono text-xs text-white border-t border-slate-900/60 pt-4 max-h-1/2 scrollbar-thin scrollbar-thumb-slate-800 relative z-10">
+            <span class="text-white italic flex items-center gap-2">
+            </span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("calcForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const en1 = document.getElementById("num1");
+            const en2 = document.getElementById("num2");
+            let n1 = en1.value.trim();
+            let n2 = en2.value.trim();
+
+            let flag = false;
+            if (/[^0-9]/.test(n1)) {
+                flag = true;
+                en1.classList.remove("border-slate-800");
+                en1.classList.add("border-red-400");
+            } else {
+                en1.classList.remove("border-red-400");
+                en1.classList.add("border-slate-800");
+            }
+            if (/[^0-9]/.test(n2)) {
+                flag = true;
+                en2.classList.remove("border-slate-800");
+                en2.classList.add("border-red-400");
+            } else {
+                en2.classList.remove("border-red-400");
+                en2.classList.add("border-slate-800");
+            }
+
+            const warning = document.getElementById("warning");
+            if (flag) {
+                warning.classList.remove("hidden");
+                warning.classList.add("animate-fade-in");
+                return; 
+            } else {
+                warning.classList.add("hidden");
+                warning.classList.remove("animate-fade-in");
+            }
+
+            const maxLen = Math.max(n1.length, n2.length);
+            n1 = n1.padStart(maxLen, '0');
+            n2 = n2.padStart(maxLen, '0');
+
+            const row1 = document.getElementById("row1");
+            const row2 = document.getElementById("row2");
+            const rowResult = document.getElementById("rowResult");
+            const consoleBoard = document.getElementById("consoleBoard");
+            const logConsole = document.getElementById("logConsole");
+            const animationZone = document.getElementById("animationZone");
+            const resultContainer = document.getElementById("resultContainer");
+            const finalResult = document.getElementById("finalResult");
+
+            consoleBoard.classList.remove("hidden");
+            consoleBoard.classList.add("animate-fade-in");
+            animationZone.classList.remove("hidden");
+            resultContainer.classList.add("hidden");
+            resultContainer.classList.add("animate-fade-in");
+            logConsole.innerHTML = "";
+
+            row1.innerHTML = n1.split('').map((ch, i) => `<span id="n1_${i}" class="px-1.5 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
+            row2.innerHTML = `<span class="absolute left-1 -top-1 text-white font-sans text-3xl font-medium">+</span>` +
+                n2.split('').map((ch, i) => `<span id="n2_${i}" class="px-1.5 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
+            rowResult.innerHTML = Array(maxLen).fill(0).map((_, i) => `<span id="res_${i}" class="px-1.5 text-white transition-all duration-300"></span>`).join('');
+
+            logConsole.innerHTML = '<div class="animate-fade-in"><span class="text-cyan-400 font-bold">[FETCHING]</span> Đang trích xuất log luồng dữ liệu I/O từ File JAR...</div>';
+
+            const formData = new FormData();
+            formData.append("num1", n1);
+            formData.append("num2", n2);
+
+            fetch('/calculate', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    runVisualAnimation(n1, n2, data.steps, data.result);
+                })
+                .catch(error => {
+                    logConsole.innerHTML = '<div class="text-red-500 font-bold animate-fade-in">[FATAL ERROR] Không thể đồng bộ luồng với Spring Boot Backend.</div>';
+                });
+        });
+
+        function runVisualAnimation(n1, n2, backendSteps, finalAns) {
+            const logConsole = document.getElementById("logConsole");
+            const resultContainer = document.getElementById("resultContainer");
+            const finalResult = document.getElementById("finalResult");
+            const rowResult = document.getElementById("rowResult");
+
+            let stepIndex = 0;
+            let len = n1.length;
+
+            if (finalAns.length > len) {
+                rowResult.insertAdjacentHTML('afterbegin', `<span id="res_leftover" class="px-1.5 text-slate-700 transition-all duration-300"></span>`);
+            }
+
+            function executeNextStep() {
+                if (stepIndex >= len) {
+                    if (finalAns.length > len) {
+                        const eLeftover = document.getElementById("res_leftover");
+
+                        const line = document.createElement("div");
+                        line.innerHTML = `<div class="animate-fade-in"><span class="text-orange-500 font-bold">[LEFTOVER]</span> Hạ số nhớ cuối cùng (${finalAns[0]}) xuống hàng kết quả.</div>`;
+                        logConsole.appendChild(line);
+                        logConsole.scrollTop = logConsole.scrollHeight;
+
+                        setTimeout(() => {
+                            eLeftover.innerText = finalAns[0];
+                            eLeftover.className = "px-1.5 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
+                        }, 1000);
+                        
+                    }
+
+                    const newLine = document.createElement("div");
+                    newLine.innerHTML = `<div class="animate-fade-in"><span class="text-white font-bold">[STEP ${stepIndex + 1}]</span> ${backendSteps[stepIndex]}</div>`;
+                    logConsole.appendChild(newLine);
+                    logConsole.scrollTop = logConsole.scrollHeight;
+
+                    const newLine2 = document.createElement("div");
+                    newLine2.innerHTML = `<div class="animate-fade-in"><span class="text-cyan-400 font-bold">[RESULT]</span> ${backendSteps[stepIndex + 2] ?? backendSteps[stepIndex + 1]}</div>`;
+                    logConsole.appendChild(newLine2);
+                    logConsole.scrollTop = logConsole.scrollHeight;
+
+                    finishCalculation();
+                    return;
+                }
+
+                let currIdx = len - 1 - stepIndex;
+
+                const e1 = document.getElementById(`n1_${currIdx}`);
+                const e2 = document.getElementById(`n2_${currIdx}`);
+                const eRes = document.getElementById(`res_${currIdx}`);
+
+                if (e1) e1.className = "px-1.5 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
+                if (e2) e2.className = "px-1.5 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
+
+                if (backendSteps && backendSteps[stepIndex]) {
+                    const line = document.createElement("div");
+                    line.innerHTML = `<div class="animate-fade-in"><span class="text-white font-bold">[STEP ${stepIndex + 1}]</span> ${backendSteps[stepIndex]}</div>`;
+                    logConsole.appendChild(line);
+                    logConsole.scrollTop = logConsole.scrollHeight;
+                }
+
+                setTimeout(() => {
+                    let ansStr = finalAns.padStart(len, '0');
+                    if (finalAns.length > len) {
+                        eRes.innerText = finalAns[currIdx + 1];
+                    } else {
+                        eRes.innerText = finalAns[currIdx];
+                    }
+
+                    eRes.className = "px-1.5 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
+
+                    if (e1) e1.className = "px-1.5 text-slate-600 border border-transparent";
+                    if (e2) e2.className = "px-1.5 text-slate-600 border border-transparent";
+
+                    stepIndex++;
+                    setTimeout(executeNextStep, 1200);
+                }, 1400);  
+            }
+
+            function finishCalculation() {
+                logConsole.innerHTML += `<div class="text-green-400 mt-3 font-bold animate-fade-in">[SUCCESS] Tiến trình kết thúc tác vụ an toàn.</div>`;
+                finalResult.innerText = finalAns;
+                resultContainer.classList.remove("hidden");
+                resultContainer.classList.add("animate-fade-in");
+            }
+
+            executeNextStep();
+        }
+    </script>
+
+</body>
+
+</html>
