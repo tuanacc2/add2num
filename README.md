@@ -2,6 +2,8 @@
 
 Ứng dụng Web sử dụng kiến trúc **Spring Boot MVC** kết hợp với giao diện **Thymeleaf & Tailwind CSS** để mô phỏng từng bước thuật toán cộng hai số nguyên lớn cực kỳ trực quan. Hệ thống kết nối và trích xuất dữ liệu log I/O thời gian thực từ một module thư viện `.jar` đóng gói sẵn.
 
+<img width="1911" height="919" alt="image" src="https://github.com/user-attachments/assets/49effb38-f596-47b4-b1f8-a4a008e29e18" />
+
 
 ---
 
@@ -46,6 +48,14 @@ Add2Num
 
 ```
 
+# Triển khai trực tuyến (Deployment trên Render)
+
+Dự án đã được cấu hình sẵn sàng để deploy tự động lên Render.com:
+
+URL: 
+
+# Hướng dẫn cài đặt và chạy Local
+
 ## Yêu cầu hệ thống
 
 Máy tính đã cài đặt JDK 17 hoặc JDK 21.
@@ -59,7 +69,7 @@ Mở Terminal tại thư mục gốc của dự án và chạy các lệnh sau:
 - **Bước 1:** Biên dịch và cài đặt file JAR thư viện ngoài cục bộ (Nếu có)
 
 ```
-mvn install:install-file -Dfile=đường-dẫn-đến-file-mybignumber.jar -DgroupId=com.mybignumber -DartifactId=lib -Dversion=1.0.0 -Dpackaging=jar
+mvn install:install-file -Dfile=mybignumber.jar -DgroupId=com.mybignumber -DartifactId=lib -Dversion=1.0.0 -Dpackaging=jar
 ```
 - **Bước 2:** Biên dịch ứng dụng
 
@@ -72,7 +82,8 @@ mvn install:install-file -Dfile=đường-dẫn-đến-file-mybignumber.jar -Dgr
 ```
 Sau khi hệ thống khởi động xong, bạn mở trình duyệt và truy cập: http://localhost:8080/
 
-📮 Cấu hình Kiểm thử API bằng Postman
+## Cấu hình Kiểm thử API bằng Postman
+
 Ứng dụng cung cấp API endpoint phục vụ kiểm thử dữ liệu độc lập:
 
 Method: POST
@@ -83,31 +94,34 @@ Content-Type: application/x-www-form-urlencoded
 
 Body Params:
 
-num1: 100
-
-num2: 900
+```
+{
+    "num1": "128",
+    "num2": "960"
+}
+```
 
 Response mẫu (JSON):
 
-JSON
+```
 {
-  "finalProgress": "1000",
-  "stepsList": [
-    "Bước 1: Lấy số 0 cộng số 0 bằng 0, ghi nhận số nhớ 0",
-    "Bước 2: Lấy số 0 cộng số 0 bằng 0, ghi nhận số nhớ 0",
-    "Bước 3: Lấy số 1 cộng số 9 bằng 10, ghi nhận kết quả và nhớ 1"
-  ]
+    "num1": "128",
+    "num2": "960",
+    "result": "1088",
+    "steps": [
+        "Đang tính tổng của 128 và 960",
+        "Tính toán hàng hiện tại: kết quả tạm thời = 8",
+        "Tính toán hàng hiện tại: kết quả tạm thời = 88",
+        "Tính toán hàng hiện tại: kết quả tạm thời = 1088",
+        "Tính toán hàng hiện tại: kết quả tạm thời = 1088",
+        "Kết quả cuối cùng: 1088"
+    ]
 }
-🧪 Chạy Kiểm thử Tự động (Unit Test)
+```
+## Chạy Kiểm thử Tự động (Unit Test)
+
 Để thực thi toàn bộ các ca kiểm thử tích hợp (Integration Test) nhằm kiểm tra tính toàn vẹn của API điều hướng và cấu trúc JSON trả về, sử dụng lệnh:
 
-Bash
+```
 ./mvnw test
-🌐 Triển khai trực tuyến (Deployment trên Render)
-Dự án đã được cấu hình sẵn sàng để deploy tự động lên Render.com:
-
-Build Command: ./mvnw clean package -DskipTests
-
-Start Command: java -jar target/tên-file-ứng-dụng-của-bạn.jar
-
-Environment: Biến môi trường Java được định nghĩa đồng bộ thông qua file system.properties.
+```
