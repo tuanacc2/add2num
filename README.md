@@ -52,7 +52,7 @@ Add2Num
 
 Dự án đã được cấu hình sẵn sàng để deploy tự động lên Render.com:
 
-URL: 
+URL: https://add2num-app.onrender.com
 
 # Hướng dẫn cài đặt và chạy Local
 
