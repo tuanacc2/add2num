@@ -2,8 +2,7 @@
 
 Ứng dụng Web sử dụng kiến trúc **Spring Boot MVC** kết hợp với giao diện **Thymeleaf & Tailwind CSS** để mô phỏng từng bước thuật toán cộng hai số nguyên lớn cực kỳ trực quan. Hệ thống kết nối và trích xuất dữ liệu log I/O thời gian thực từ một module thư viện `.jar` đóng gói sẵn.
 
-<img width="1911" height="919" alt="image" src="https://github.com/user-attachments/assets/49effb38-f596-47b4-b1f8-a4a008e29e18" />
-
+<img width="1902" height="911" alt="image" src="https://github.com/user-attachments/assets/b22c4669-dfe1-47f9-ae02-d466014b4b62" />
 
 ---
 
