@@ -120,10 +120,10 @@
             resultContainer.classList.add("animate-fade-in");
             logConsole.innerHTML = "";
 
-            row1.innerHTML = n1.split('').map((ch, i) => `<span id="n1_${i}" class="px-1.5 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
+            row1.innerHTML = n1.split('').map((ch, i) => `<span id="n1_${i}" class="px-1 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
             row2.innerHTML = `<span class="absolute left-1 -top-1 text-white font-sans text-3xl font-medium">+</span>` +
-                n2.split('').map((ch, i) => `<span id="n2_${i}" class="px-1.5 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
-            rowResult.innerHTML = Array(maxLen).fill(0).map((_, i) => `<span id="res_${i}" class="px-1.5 text-white transition-all duration-300"></span>`).join('');
+                n2.split('').map((ch, i) => `<span id="n2_${i}" class="px-1 text-white transition-all duration-300 rounded-md">${ch}</span>`).join('');
+            rowResult.innerHTML = Array(maxLen).fill(0).map((_, i) => `<span id="res_${i}" class="px-1 text-white transition-all duration-300"></span>`).join('');
 
             logConsole.innerHTML = '<div class="animate-fade-in"><span class="text-cyan-400 font-bold">[FETCHING]</span> Đang trích xuất log luồng dữ liệu I/O từ File JAR...</div>';
 
@@ -151,7 +151,7 @@
             let len = n1.length;
 
             if (finalAns.length > len) {
-                rowResult.insertAdjacentHTML('afterbegin', `<span id="res_leftover" class="px-1.5 text-slate-700 transition-all duration-300"></span>`);
+                rowResult.insertAdjacentHTML('afterbegin', `<span id="res_leftover" class="px-1 text-slate-700 transition-all duration-300"></span>`);
             }
 
             function executeNextStep() {
@@ -166,7 +166,7 @@
 
                         setTimeout(() => {
                             eLeftover.innerText = finalAns[0];
-                            eLeftover.className = "px-1.5 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
+                            eLeftover.className = "px-1 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
                         }, 1000);
                         
                     }
@@ -191,8 +191,8 @@
                 const e2 = document.getElementById(`n2_${currIdx}`);
                 const eRes = document.getElementById(`res_${currIdx}`);
 
-                if (e1) e1.className = "px-1.5 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
-                if (e2) e2.className = "px-1.5 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
+                if (e1) e1.className = "px-1 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
+                if (e2) e2.className = "px-1 text-yellow-400 font-bold scale-105 bg-slate-800 border border-cyan-500/50 shadow-[0_0_15px_rgba(234,179,8,0.25)] rounded-md";
 
                 if (backendSteps && backendSteps[stepIndex]) {
                     const line = document.createElement("div");
@@ -209,10 +209,10 @@
                         eRes.innerText = finalAns[currIdx];
                     }
 
-                    eRes.className = "px-1.5 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
+                    eRes.className = "px-1 text-emerald-400 font-black bg-emerald-500/10 border border-emerald-500/30 rounded-md shadow-[0_0_15px_rgba(52,211,153,0.3)] scale-105";
 
-                    if (e1) e1.className = "px-1.5 text-slate-600 border border-transparent";
-                    if (e2) e2.className = "px-1.5 text-slate-600 border border-transparent";
+                    if (e1) e1.className = "px-1 text-slate-600 border border-transparent";
+                    if (e2) e2.className = "px-1 text-slate-600 border border-transparent";
 
                     stepIndex++;
                     setTimeout(executeNextStep, 1200);
