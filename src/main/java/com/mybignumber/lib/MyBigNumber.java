@@ -7,11 +7,10 @@ public class MyBigNumber {
     private static final Logger logger = LoggerFactory.getLogger(MyBigNumber.class);
     
     public static String sum(String stn1, String stn2) {
-        logger.info("Đang tính tổng của hai số có độ dài {} và {}", stn1, stn2);
-
         if (stn1 == null || stn2 == null || !stn1.matches("\\d+") || !stn2.matches("\\d+")) {
             throw new IllegalArgumentException("Đầu vào phải là chuỗi ký số hợp lệ và không rỗng.");
         }
+        logger.info("Đang tính tổng của hai số có độ dài {} và {}", stn1, stn2);
 
         // Tạo mảng chứa kết quả, kích thước tối đa là độ dài lớn nhất + 1
         char[] result = new char[Math.max(stn1.length(), stn2.length()) + 1];
