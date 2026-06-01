@@ -75,9 +75,9 @@
             let n1 = en1.value.trim();
             let n2 = en2.value.trim();
 
-            let flag = false;
+            let isInvalid = false;
             if (/[^0-9]/.test(n1)) {
-                flag = true;
+                isInvalid = true;
                 en1.classList.remove("border-slate-800");
                 en1.classList.add("border-red-400");
             } else {
@@ -85,7 +85,7 @@
                 en1.classList.add("border-slate-800");
             }
             if (/[^0-9]/.test(n2)) {
-                flag = true;
+                isInvalid = true;
                 en2.classList.remove("border-slate-800");
                 en2.classList.add("border-red-400");
             } else {
@@ -94,14 +94,11 @@
             }
 
             const warning = document.getElementById("warning");
-            if (flag) {
+            if (isInvalid) {
                 warning.classList.remove("hidden");
-                warning.classList.add("animate-fade-in");
                 return; 
-            } else {
-                warning.classList.add("hidden");
-                warning.classList.remove("animate-fade-in");
-            }
+            } 
+            warning.classList.add("hidden");
 
             const maxLen = Math.max(n1.length, n2.length);
             n1 = n1.padStart(maxLen, '0');
