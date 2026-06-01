@@ -51,12 +51,12 @@
         class="hidden lg:w-1/2 w-100 lg:float-left flex-1 p-8 flex flex-col min-h-[500px] relative overflow-hidden">
         <div id="animationZone"
             class="flex flex-col items-end font-mono text-4xl tracking-widest mb-6 space-y-3 hidden relative z-10">
-            <div id="row1" class="flex gap-1.5 py-1 text-white font-light transition-all duration-300"></div>
+            <div id="row1" class="flex gap-1.5 py-1 text-white text-lg font-light transition-all duration-300"></div>
             <div id="row2"
-                class="flex gap-1.5 py-1 border-b-2 border-slate-700 w-full justify-end relative text-white font-light transition-all duration-300">
+                class="flex gap-1.5 py-1 border-b-2 border-slate-700 w-full justify-end relative text-white text-lg font-light transition-all duration-300">
                 <span class="absolute left-1 -top-1 text-white font-sans text-3xl font-medium">+</span>
             </div>
-            <div id="rowResult" class="flex gap-1.5 py-1 text-white font-medium transition-all duration-300"></div>
+            <div id="rowResult" class="flex gap-1.5 py-1 text-white text-lg font-medium transition-all duration-300"></div>
         </div>
 
         <div id="logConsole"
@@ -220,7 +220,7 @@
             }
 
             function finishCalculation() {
-                logConsole.innerHTML += `<div class="text-green-400 mt-3 font-bold animate-fade-in">[SUCCESS] Tiến trình kết thúc tác vụ an toàn.</div>`;
+                logConsole.innerHTML += `<div class="text-green-400 mt-3 font-bold animate-fade-in">[SUCCESS] Tiến trình kết thúc thành công.</div>`;
                 finalResult.innerText = finalAns;
                 resultContainer.classList.remove("hidden");
                 resultContainer.classList.add("animate-fade-in");

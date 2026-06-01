@@ -66,18 +66,13 @@ Máy tính đã cài đặt JDK 17 hoặc JDK 21.
 
 Mở Terminal tại thư mục gốc của dự án và chạy các lệnh sau:
 
-- **Bước 1:** Biên dịch và cài đặt file JAR thư viện ngoài cục bộ (Nếu có)
+- **Bước 1:** Biên dịch ứng dụng
 
-```
-mvn install:install-file -Dfile=mybignumber.jar -DgroupId=com.mybignumber -DartifactId=lib -Dversion=1.0.0 -Dpackaging=jar
-```
-- **Bước 2:** Biên dịch ứng dụng
-
-```
+```bash
 ./mvnw clean package -DskipTests
 ```
-- **Bước 3:** Chạy ứng dụng
-```
+- **Bước 2:** Chạy ứng dụng
+```bash
 ./mvnw spring-boot:run
 ```
 Sau khi hệ thống khởi động xong, bạn mở trình duyệt và truy cập: http://localhost:8080/
@@ -94,7 +89,7 @@ Content-Type: application/x-www-form-urlencoded
 
 Body Params:
 
-```
+```json
 {
     "num1": "128",
     "num2": "960"
@@ -103,7 +98,7 @@ Body Params:
 
 Response mẫu (JSON):
 
-```
+```json
 {
     "num1": "128",
     "num2": "960",
@@ -122,6 +117,6 @@ Response mẫu (JSON):
 
 Để thực thi toàn bộ các ca kiểm thử tích hợp (Integration Test) nhằm kiểm tra tính toàn vẹn của API điều hướng và cấu trúc JSON trả về, sử dụng lệnh:
 
-```
+```bash
 ./mvnw test
 ```
