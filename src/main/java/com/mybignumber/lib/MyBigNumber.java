@@ -13,7 +13,8 @@ public class MyBigNumber {
             throw new IllegalArgumentException("Đầu vào phải là chuỗi ký số hợp lệ và không rỗng.");
         }
 
-        char[] result = new char[Math.max(stn1.length(), stn2.length()) + 1]; // +1 cho trường hợp có số nhớ cuối cùng
+        // Tạo mảng chứa kết quả, kích thước tối đa là độ dài lớn nhất + 1 (phòng trường hợp có số nhớ cuối cùng)
+        char[] result = new char[Math.max(stn1.length(), stn2.length()) + 1];
         int n1idx = stn1.length() - 1;
         int n2idx = stn2.length() - 1;
         int rIdx = result.length - 1;   // Index của chữ số đang tính, bắt đầu từ cuối chuỗi
@@ -29,19 +30,21 @@ public class MyBigNumber {
 
             result[rIdx--] = (char)(total % 10 + '0');
 
-            if (logger.isDebugEnabled()) {
-                logger.info("Tính toán hàng hiện tại: kết quả tạm thời = {}", has_carry ? "1" + new String(result) : new String(result));
-            }
+            logger.info("Tính toán hàng hiện tại: kết quả tạm thời = {}", has_carry ? "1" + new String(result) : new String(result));
         }
 
         if (has_carry) {
             result[0] = '1';
         }
+
+        int startIndex = rIdx + 1;
         
-        // Loại bỏ các dấu cách ở trong kết quả
         // Loại bỏ các số 0 ở đầu, nhưng giữ lại nếu kết quả là "0"
-        String finalResult = new String(result).trim().replaceFirst("^0+(?!$)", ""); 
+        while (startIndex < result.length - 1 && result[startIndex] == '0') {
+            startIndex++;
+        }
+        
         logger.info("Tính toán thành công.");
-        return finalResult;
+        return new String(result, startIndex, result.length - startIndex);
     }
 }
