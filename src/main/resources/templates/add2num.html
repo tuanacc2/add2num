@@ -9,7 +9,7 @@
 
 <body class="font-mono bg-gradient-to-r from-black via-gray-950 to-gray-950 min-h-screen py-12 px-4 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
 
-    <div class="lg:w-1/2 w-100 lg:float-left flex-1 flex flex-col justify-between">
+    <div class="lg:w-1/2 w-full lg:float-left flex-1 flex flex-col justify-between">
         <div class="p-4">
             <h2
                 class="text-2xl font-extrabold text-white mb-8 flex items-center gap-3">
@@ -29,10 +29,26 @@
                         class="min-w-[320px] p-4 bg-slate-950/80 border border-slate-800 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none font-mono text-xl tracking-widest text-white placeholder-slate-600 transition-all duration-200 shadow-inner">
                 </div>
 
-                <button type="submit"
-                    class="py-4 px-16 border text-white text-lg font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0px_32px_rgba(79,70,229,0.5)] active:scale-[0.99] flex justify-center items-center gap-2 tracking-wide cursor-pointer uppercase">
-                    Tính
-                </button>
+                <div>
+                    <button type="submit"
+                        class="py-4 px-16 border text-white inline-block text-lg font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0px_32px_rgba(79,70,229,0.5)] active:scale-[0.99] gap-2 tracking-wide cursor-pointer uppercase">
+                        Tính
+                    </button>
+                    <button type="none" 
+                        onclick="
+                            document.getElementById('calcForm').reset(); 
+                            document.getElementById('warning').classList.add('hidden');
+                            ['num1', 'num2'].forEach(el => {
+                                const field = document.getElementById(el);
+                                field.classList.remove('border-red-400');
+                                field.classList.add('border-slate-800');
+                            });
+                        "
+                        class="py-4 px-4 border border-red-500 text-red-500 inline-block text-lg font-bold rounded-xl transition-all duration-300 hover:shadow-[0_0px_32px_rgba(79,70,229,0.5)] active:scale-[0.99] gap-2 tracking-wide cursor-pointer uppercase">
+                        Xóa form
+                    </button>
+                </div>
+                
                 <p id="warning" class="hidden text-md font-bold tracking-wider text-red-500 pl-4 align-top"> Chỉ cho phép chữ số</p>
             </form>
         </div>
@@ -48,7 +64,7 @@
     </div>
 
     <div id="consoleBoard"
-        class="hidden lg:w-1/2 w-100 lg:float-left flex-1 p-8 flex flex-col min-h-[500px] relative overflow-hidden">
+        class="hidden lg:w-1/2 w-full lg:float-left flex-1 p-8 flex flex-col min-h-[500px] relative overflow-hidden">
         <div id="animationZone"
             class="flex flex-col items-end font-mono text-4xl tracking-widest mb-6 space-y-3 hidden relative z-10">
             <div id="row1" class="flex gap-1.5 py-1 text-white text-2xl font-light transition-all duration-300"></div>
@@ -101,8 +117,8 @@
             warning.classList.add("hidden");
 
             const maxLen = Math.max(n1.length, n2.length);
-            n1 = n1.padStart(maxLen, '0');
-            n2 = n2.padStart(maxLen, '0');
+            n1 = n1.padStart(maxLen, ' ');
+            n2 = n2.padStart(maxLen, ' ');
 
             const row1 = document.getElementById("row1");
             const row2 = document.getElementById("row2");
@@ -128,8 +144,8 @@
             logConsole.innerHTML = '<div class="animate-fade-in"><span class="text-cyan-400 font-bold">[FETCHING]</span> Đang trích xuất log luồng dữ liệu I/O từ File JAR...</div>';
 
             const formData = new FormData();
-            formData.append("num1", n1);
-            formData.append("num2", n2);
+            formData.append("num1", n1.trim());
+            formData.append("num2", n2.trim());
 
             fetch('/calculate', { method: 'POST', body: formData })
                 .then(response => response.json())
