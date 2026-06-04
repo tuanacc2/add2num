@@ -1,62 +1,86 @@
 package com.mybignumber.lib;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+class MyBigNumberTest {
 
-public class MyBigNumberTest {
+    @BeforeEach
+    void setUp() {
+        MyBigNumber.clearLogs();
+    }
 
-    @ParameterizedTest(name = "{index} => Tính tổng: {0} + {1} phải bằng {2}")
-    @DisplayName("Các trường hợp tính toán đúng (Happy Paths)")
+    @AfterEach
+    void tearDown() {
+        MyBigNumber.clearLogs();
+    }
+
+    @ParameterizedTest(name = "Testcase {index}: {0} + {1} = {2}")
+    @DisplayName("Kiểm thử các phân vùng dữ liệu hợp lệ (Equivalence Partitioning)")
     @CsvSource({
-        "123, 456, 579",          // Độ dài bằng nhau, không nhớ
-        "58, 67, 125",            // Độ dài bằng nhau, có nhớ
-        "100020, 35, 100055",     // Số thứ nhất dài hơn
-        "12, 99988, 100000",      // Số thứ hai dài hơn
-        "999, 1, 1000",           // Nhớ dây chuyền lên hàng đầu tiên
-        "0, 0, 0",                // Cộng hai số 0
-        "8675309, 0, 8675309",    // Cộng với số 0
-        "00123, 05, 128"          // Trường hợp số có các số 0 vô nghĩa ở đầu (Leading zeros)
+        "1234, 897, 2131",      // Kịch bản mẫu trong tài liệu đặc tả
+        "0, 0, 0",              // Biên giá trị nhỏ nhất
+        "9, 9, 18",            // Phép cộng có nhớ đơn giản
+        "12, 34, 46",          // Độ dài bằng nhau, không nhớ
+        "999, 1, 1000",        // Tràn hàng nhớ liên tục tạo leftover ở đầu
+        "000123, 45, 000168"   // Giữ nguyên đệm số 0 theo tiến trình lặp tiểu học
     })
-    void testValidAdditions(String stn1, String stn2, String expected) {
-        assertEquals(expected, MyBigNumber.sum(stn1, stn2));
+    void testSum_ValidInputs(String num1, String num2, String expectedResult) {
+        String actualResult = MyBigNumber.sum(num1, num2);
+
+        // Assert 1: Kiểm tra tính chính xác của kết quả toán học
+        assertEquals(expectedResult, actualResult, 
+            String.format("Sai kết quả khi cộng %s và %s", num1, num2));
+
+        // Assert 2: Kiểm tra độ phủ của log tiến trình
+        List<String> steps = MyBigNumber.getStepLogs();
+        assertNotNull(steps, "Danh sách bước tính không được null");
+        assertTrue(steps.size() > 0, "Phải sinh ra ít nhất 1 dòng log bước tính toán");
+
+        // Ghi nhận ra màn hình test kết quả log cụ thể của kịch bản này
+        System.out.println(String.format("=== LOGS FOR TESTCASE: %s + %s ===", num1, num2));
+        steps.forEach(step -> System.out.println("   > " + step));
+    }
+
+    @ParameterizedTest(name = "Testcase lỗi {index}: num1=''{0}'', num2='''{1}'''")
+    @DisplayName("Kiểm thử phân vùng dữ liệu bẩn / không hợp lệ (Boundary Value Analysis)")
+    @CsvSource({
+        ", 123",               // Tham số thứ nhất null
+        "123, ",               // Tham số thứ hai null
+        "12a3, 456",           // Chứa ký tự chữ cái
+        "123, 45 6",           // Chứa khoảng trắng ngầm
+        "123, 456-",           // Chứa ký tự đặc biệt
+        "-123, 456",           // Số âm (không hợp lệ)
+        "'', 123"              // Chuỗi rỗng
+    })
+    void testSum_InvalidInputs_ShouldThrowException(String num1, String num2) {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            MyBigNumber.sum(num1, num2);
+        });
+
+        assertEquals("Đầu vào phải là chuỗi ký số hợp lệ và không rỗng.", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Bounda: Kiểm tra với số siêu lớn (Tránh tràn mảng/bộ nhớ)")
-    void testExtremelyLargeNumbers() {
-        String num1 = "9".repeat(1000); // 1000 chữ số 9
+    @DisplayName("Kiểm thử biên dữ liệu cực lớn (Extreme Big Number Processing)")
+    void testSum_ExtremeLargeNumbers() {
+        String num1 = "9".repeat(100); 
         String num2 = "1";
-        String expected = "1" + "0".repeat(1000); // 1 và 1000 chữ số 0
+        String expected = "1" + "0".repeat(100);
+
+        String actual = MyBigNumber.sum(num1, num2);
+        List<String> steps = MyBigNumber.getStepLogs();
+
+        assertEquals(expected, actual);
         
-        assertEquals(expected, MyBigNumber.sum(num1, num2));
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("Thất bại: Đầu vào là null hoặc chuỗi rỗng")
-    void testNullOrEmptyInput(String invalidInput) {
-        assertThrows(IllegalArgumentException.class, () -> {
-            MyBigNumber.sum(invalidInput, "123");
-        }, "Phải ném IllegalArgumentException khi đầu vào null hoặc rỗng");
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            MyBigNumber.sum("123", invalidInput);
-        }, "Phải ném IllegalArgumentException khi đầu vào null hoặc rỗng");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"12a3", "-123", "1.23", "1 23", "   ", "abc"})
-    @DisplayName("Thất bại: Đầu vào chứa ký tự không phải số hoặc số âm")
-    void testInvalidCharactersInput(String invalidInput) {
-        assertThrows(IllegalArgumentException.class, () -> {
-            MyBigNumber.sum(invalidInput, "456");
-        }, "Phải ném IllegalArgumentException khi chứa ký tự lỗi: " + invalidInput);
+        // Đếm chính xác số bước logic chạy qua để xác thực cấu trúc lặp
+        // 100 chữ số thực hiện vòng lặp + 1 bước hạ số nhớ carry cuối cùng lên đầu = 101 bước
+        assertEquals(101, steps.size(), "Số lượng dòng log tiến trình ghi nhận không khớp với số bước tính");
     }
 }

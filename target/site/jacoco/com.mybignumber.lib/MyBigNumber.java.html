@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyBigNumber.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mybignumber-core</a> &gt; <a href="index.source.html" class="el_package">com.mybignumber.lib</a> &gt; <span class="el_source">MyBigNumber.java</span></div><h1>MyBigNumber.java</h1><pre class="source lang-java linenums">package com.mybignumber.lib;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+<span class="nc" id="L10">public class MyBigNumber {</span>
+<span class="fc" id="L11">    private static final Logger logger = LoggerFactory.getLogger(MyBigNumber.class);</span>
+
+<span class="fc" id="L13">    private static final ThreadLocal&lt;List&lt;String&gt;&gt; stepLogs = ThreadLocal.withInitial(ArrayList::new);</span>
+
+    public static void clearLogs() {
+<span class="fc" id="L16">        logger.info(&quot;Đang dọn dẹp log trước khi chạy kịch bản mới.&quot;);</span>
+<span class="fc" id="L17">        stepLogs.get().clear();</span>
+<span class="fc" id="L18">    }</span>
+
+    public static List&lt;String&gt; getStepLogs() {
+        // Trả về danh sách các bước tính toán thực tế đã được ghi lại
+<span class="fc" id="L22">        return Collections.unmodifiableList(stepLogs.get());</span>
+    }
+    
+    public static String sum(String stn1, String stn2) {
+<span class="fc bfc" id="L26" title="All 8 branches covered.">        if (stn1 == null || stn2 == null || !stn1.matches(&quot;\\d+&quot;) || !stn2.matches(&quot;\\d+&quot;)) {</span>
+<span class="fc" id="L27">            throw new IllegalArgumentException(&quot;Đầu vào phải là chuỗi ký số hợp lệ và không rỗng.&quot;);</span>
+        }
+
+        // Dọn dẹp log trước khi bắt đầu tính toán mới
+<span class="fc" id="L31">        stepLogs.get().clear();</span>
+<span class="fc" id="L32">        List&lt;String&gt; currentSteps = stepLogs.get();</span>
+<span class="fc" id="L33">        logger.info(&quot;Đang tính tổng của hai số có độ dài {} và {}&quot;, stn1, stn2);</span>
+<span class="fc" id="L34">        int stepNum = 1;</span>
+
+
+<span class="fc" id="L37">        StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L38">        boolean has_carry = false;</span>
+        int digit1, digit2, total;
+
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        for (int n1idx = stn1.length() - 1, n2idx = stn2.length() - 1; n1idx &gt;= 0 || n2idx &gt;= 0; n1idx--, n2idx--) {</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">            digit1 = (n1idx &gt;= 0) ? stn1.charAt(n1idx) - '0' : 0;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            digit2 = (n2idx &gt;= 0) ? stn2.charAt(n2idx) - '0' : 0;</span>
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            total = digit1 + digit2 + (has_carry ? 1 : 0);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            has_carry = total &gt; 9;</span>
+
+<span class="fc" id="L48">            result.insert(0, (char)(total % 10 + '0'));</span>
+<span class="fc" id="L49">            stepNum++;</span>
+
+            // Logging chi tiết bước tính toán hiện tại
+            String msgStep;
+<span class="pc bpc" id="L53" title="3 of 4 branches missed.">            if (stepNum == 1 &amp;&amp; !has_carry) {</span>
+<span class="nc" id="L54">                msgStep = String.format(&quot;Bước %d: Lấy %d cộng với %d được %d. Lưu %d vào kết quả và nhớ %d.&quot;,</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">                        stepNum, digit1, digit2, total, total % 10, has_carry ? 1 : 0);</span>
+<span class="nc" id="L56">            } else {</span>
+<span class="fc" id="L57">                msgStep = String.format(&quot;Bước %d: Lấy %d cộng với %d được %d. Cộng tiếp với nhớ %d được %d. Lưu %d vào kết quả và nhớ %d.&quot;,</span>
+<span class="fc bfc" id="L58" title="All 4 branches covered.">                        stepNum, digit1, digit2, (digit1 + digit2), has_carry ? 1 : 0, total, total % 10, has_carry ? 1 : 0);</span>
+            }
+
+            // Lưu vết log vào cả cơ chế ThreadLocal và logger để có thể kiểm tra trong unit test
+<span class="fc" id="L62">            currentSteps.add(msgStep);</span>
+<span class="fc" id="L63">            logger.info(msgStep);</span>
+        }
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (has_carry) {</span>
+<span class="fc" id="L67">            result.insert(0, '1');</span>
+
+            // Logging bước hạ số nhớ cuối cùng xuống hàng kết quả nếu có
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">            String leftoverMsg = String.format(&quot;Bước %d: Hạ số nhớ cuối cùng (%d) xuống hàng kết quả.&quot;, stepNum, has_carry ? 1 : 0);</span>
+<span class="fc" id="L71">            currentSteps.add(leftoverMsg);</span>
+<span class="fc" id="L72">            logger.info(leftoverMsg);</span>
+        }
+
+<span class="fc" id="L75">        String finalResult = result.toString();</span>
+
+<span class="fc" id="L77">        logger.info(&quot;Tính toán thành công.&quot;);</span>
+<span class="fc" id="L78">        return finalResult;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
