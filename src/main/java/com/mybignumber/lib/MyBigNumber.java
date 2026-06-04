@@ -12,38 +12,28 @@ public class MyBigNumber {
         }
         logger.info("Đang tính tổng của hai số có độ dài {} và {}", stn1, stn2);
 
-        // Tạo mảng chứa kết quả, kích thước tối đa là độ dài lớn nhất + 1
-        char[] result = new char[Math.max(stn1.length(), stn2.length()) + 1];
-        int n1idx = stn1.length() - 1;
-        int n2idx = stn2.length() - 1;
-        int rIdx = result.length - 1;   // Index của chữ số đang tính, bắt đầu từ cuối chuỗi
+        StringBuilder result = new StringBuilder();
+        
         boolean has_carry = false;
         int digit1, digit2, total;
 
-        while (n1idx >= 0 || n2idx >= 0) {
-            digit1 = (n1idx >= 0) ? stn1.charAt(n1idx--) - '0' : 0;
-            digit2 = (n2idx >= 0) ? stn2.charAt(n2idx--) - '0' : 0;
+        for (int n1idx = stn1.length() - 1, n2idx = stn2.length() - 1; n1idx >= 0 || n2idx >= 0; n1idx--, n2idx--) {
+            digit1 = (n1idx >= 0) ? stn1.charAt(n1idx) - '0' : 0;
+            digit2 = (n2idx >= 0) ? stn2.charAt(n2idx) - '0' : 0;
 
             total = digit1 + digit2 + (has_carry ? 1 : 0);
             has_carry = total > 9;
 
-            result[rIdx--] = (char)(total % 10 + '0');
+            result.insert(0, (char)(total % 10 + '0'));
 
-            logger.info("Tính toán hàng hiện tại: kết quả tạm thời = {}", has_carry ? "1" + new String(result) : new String(result));
+            logger.info("Tính toán hàng hiện tại: kết quả tạm thời = {}", has_carry ? "1" + result.toString() : result.toString());      
         }
 
         if (has_carry) {
-            result[rIdx--] = '1';
+            result.insert(0, '1');
         }
 
-        int startIndex = rIdx + 1; // Vị trí bắt đầu của kết quả thực tế trong mảng
-        
-        // Xóa các số '0' đầu tiên, nhưng phải dừng lại trước ô cuối cùng để đề phòng kết quả bằng "0"
-        while (startIndex < result.length - 1 && result[startIndex] == '0') {
-            startIndex++;
-        }
-        
-        String finalResult = new String(result, startIndex, result.length - startIndex);
+        String finalResult = result.toString();
 
         logger.info("Tính toán thành công.");
         return finalResult;

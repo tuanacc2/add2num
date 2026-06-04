@@ -29,7 +29,7 @@ public class MyBigNumberTest {
     }
 
     @Test
-    @DisplayName("Nâng cao: Kiểm tra với số siêu lớn (Tránh tràn mảng/bộ nhớ)")
+    @DisplayName("Bounda: Kiểm tra với số siêu lớn (Tránh tràn mảng/bộ nhớ)")
     void testExtremelyLargeNumbers() {
         String num1 = "9".repeat(1000); // 1000 chữ số 9
         String num2 = "1";
